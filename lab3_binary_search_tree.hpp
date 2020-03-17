@@ -53,9 +53,15 @@ public:
 	
 	// PURPOSE: Returns the tree height
 	unsigned int height() const;
+
+	//PURPOSE: Helper for recursive tree height
+    unsigned int recursive_height(BinarySearchTree::TaskItem* val) const;
 	
 	// PURPOSE: Prints the contents of the tree; format not specified
 	void print() const;
+
+	//Purpose: Print contents inorder traversal recursively
+    void print(BinarySearchTree::TaskItem* val) const;
 	
 	// PURPOSE: Returns true if a node with the value val exists in the tree	
 	// otherwise, returns false
