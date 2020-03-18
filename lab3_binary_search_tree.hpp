@@ -55,17 +55,20 @@ public:
 	unsigned int height() const;
 
 	//PURPOSE: Helper for recursive tree height
-    unsigned int recursive_height(BinarySearchTree::TaskItem* val) const;
+    unsigned int recursive_height(TaskItem* val) const;
 	
 	// PURPOSE: Prints the contents of the tree; format not specified
 	void print() const;
 
 	//Purpose: Print contents inorder traversal recursively
-    void print(BinarySearchTree::TaskItem* val) const;
+    void print(TaskItem* val) const;
 	
 	// PURPOSE: Returns true if a node with the value val exists in the tree	
 	// otherwise, returns false
 	bool exists(TaskItem val) const;
+
+	//Purpose: Function to check existence recursively
+	bool exists(TaskItem val, TaskItem cur) const;
   
   	// PURPOSE: Optional helper function that returns a pointer to the root node
 	TaskItem* get_root_node();
@@ -81,9 +84,15 @@ public:
 	// PURPOSE: Inserts the value val into the tree if it is unique
   	// returns true if successful; returns false if val already exists
 	bool insert(TaskItem val);
+
+	//Purpose: Overloaded recursive function for insert
+	void insert(TaskItem val, TaskItem* cur);
 	
 	// PURPOSE: Removes the node with the value val from the tree
 	// returns true if successful; returns false otherwise
 	bool remove(TaskItem val);
+
+	//Purpose: Overloaded recursive function to traverse tree for remove
+	void remove(TaskItem val, TaskItem* cur);
 };
 #endif
