@@ -55,7 +55,7 @@ public:
 	unsigned int height() const;
 
 	//PURPOSE: Helper for recursive tree height
-    unsigned int recursive_height(TaskItem* val) const;
+    int recursive_height(TaskItem* val) const;
 	
 	// PURPOSE: Prints the contents of the tree; format not specified
 	void print() const;
@@ -68,7 +68,7 @@ public:
 	bool exists(TaskItem val) const;
 
 	//Purpose: Function to check existence recursively
-	bool exists(TaskItem val, TaskItem cur) const;
+	bool exists(TaskItem val, TaskItem *cur) const;
   
   	// PURPOSE: Optional helper function that returns a pointer to the root node
 	TaskItem* get_root_node();

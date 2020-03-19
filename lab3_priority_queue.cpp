@@ -8,14 +8,12 @@ PriorityQueue::PriorityQueue(unsigned int n_capacity) {
     capacity = n_capacity;
     heap = new TaskItem* [capacity + 1];
     size = 0;
-
 }
 
 // PURPOSE: Explicit destructor of the class PriorityQueue
 PriorityQueue::~PriorityQueue() {
     //remove all the elements inside the heap
     delete []heap;
-
 }
 
 // PURPOSE: Returns the number of elements in the priority queue
@@ -58,9 +56,15 @@ PriorityQueue::TaskItem PriorityQueue::max() const {
 bool PriorityQueue::enqueue( TaskItem val ) {
     if ( size == capacity)
         return false;
-
     if (empty()) {
         heap[1] = new TaskItem(val.priority, val.description);
+    }
+    bool dupl = false;
+    for (int i = 1; i < size + 1; i++) {
+        dupl = heap[i]->priority == val.priority;
+    }
+    if (dupl) {
+        return false;
     } else {
         int i = size + 1;
         heap[i] = new TaskItem(val.priority, val.description);
@@ -68,7 +72,7 @@ bool PriorityQueue::enqueue( TaskItem val ) {
             TaskItem* temp = heap[i];
             heap[i] = heap[i/2];
             heap[i/2] = temp;
-            i/= 2;
+            i /= 2;
         }
     }
     size++;
@@ -82,12 +86,10 @@ bool PriorityQueue::enqueue( TaskItem val ) {
 bool PriorityQueue::dequeue() {
     if (empty())
         return false;
-
     if (size == 1) {
         delete heap[1];
         heap[1] = NULL;
     } else {
-
         TaskItem* temp = heap[1];
         heap[1] = heap[size];
         heap[size] = temp;
@@ -103,7 +105,6 @@ bool PriorityQueue::dequeue() {
             int right_child_p = 0;
             TaskItem* left_child = heap[2*i];
             TaskItem* right_child = heap[2*i + 1];
-
 
             if (left_child)
                 left_child_p = left_child->priority;
@@ -121,6 +122,7 @@ bool PriorityQueue::dequeue() {
                 heap[2*i + 1] = heap[i];
                 heap[i] = right_child;
             }
+            i++;
         }
     }
     size--;

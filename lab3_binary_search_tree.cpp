@@ -51,15 +51,20 @@ BinarySearchTree::TaskItem BinarySearchTree::min() const {
 
 // PURPOSE: Returns the tree height
 unsigned int BinarySearchTree::height() const {
-    return recursive_height(root);
+    if (!root) //Accounts for the height of an empty tree which is invalid so return -1
+        return 0;
+    else if (!root->left && !root->right)
+        return 0;
+    else
+        return recursive_height(root);
 }
 
 //Purpose: recursive algorithm for tree height
-unsigned int BinarySearchTree::recursive_height(BinarySearchTree::TaskItem* val) const {
+ int BinarySearchTree::recursive_height(BinarySearchTree::TaskItem* val) const {
     if (val == NULL)
         return -1;
     else
-        return 1 + (recursive_height(val->left) >= recursive_height(val->right) ? recursive_height(val->left) : recursive_height(val->right));
+        return 1 + (std::max( recursive_height(val->left) , recursive_height(val->right)));
 }
 
 // PURPOSE: Prints the contents of the tree; format not specified
@@ -79,22 +84,24 @@ void BinarySearchTree::print(BinarySearchTree::TaskItem* val) const {
 // PURPOSE: Returns true if a node with the value val exists in the tree	
 // otherwise, returns false
 bool BinarySearchTree::exists( BinarySearchTree::TaskItem val ) const {
-    if (size != 0 && val.priority)
-        return exists(val, *root);
+    if (size != 0 && &val)
+        return exists(val, root);
     else
         return false;
 }
 
 //Overloaded function to traverse tree using recursion and check for existence
-bool BinarySearchTree::exists(BinarySearchTree::TaskItem val, BinarySearchTree::TaskItem cur) const {
-    if (!val.priority)
+bool BinarySearchTree::exists(BinarySearchTree::TaskItem val, BinarySearchTree::TaskItem* cur) const {
+    if (!cur)
         return false;
-    if (val.priority == cur.priority && val.description == cur.description)
+    if (val.priority == cur->priority && val.description == cur->description)
         return true;
-    else if (val.priority < cur.priority)
-        return exists(val, *cur.left);
-    else if (val.priority > cur.priority)
-        return exists(val, *cur.right);
+    else if(!cur->left && !cur->right)
+        return false;
+    else if (val.priority < cur->priority)
+        return exists(val, cur->left);
+    else if (val.priority > cur->priority)
+        return exists(val, cur->right);
     else
         return false;
 }
@@ -153,18 +160,30 @@ bool BinarySearchTree::remove( BinarySearchTree::TaskItem val) {
 //Recursively goes through tree to remove the input node
 void BinarySearchTree::remove(BinarySearchTree::TaskItem val, BinarySearchTree::TaskItem *cur) {
 
+    if (!cur) {
+        return;
+    }
     if (val.priority == cur->priority && root == cur) {
         TaskItem* temp = cur;
         if (!temp->left && ! temp->right) {
+            root = NULL;
             delete temp;
             temp = NULL;
         } else if(temp->left && temp->right) {
             TaskItem* min = temp->right;
             while (min->left) {
-                min = min->left;
+                if (!min->left->left) {
+                   TaskItem* parent = min;
+                   min = min->left;
+                   parent->left = NULL;
+                } else
+                    min = min->left;
             }
             root = min;
             min->left = temp->left;
+            if(cur->right != min) {
+                min->right = temp->right;
+            }
             delete temp;
             temp = NULL;
         } else if (temp->left || temp->right) {
@@ -173,18 +192,27 @@ void BinarySearchTree::remove(BinarySearchTree::TaskItem val, BinarySearchTree::
             temp = NULL;
         }
     }
-    else if (val.priority == cur->left->priority) {
+    else if (cur->left && val.priority == cur->left->priority) {
         TaskItem* temp = cur->left;
         if (!temp->left && ! temp->right) {
+            cur->left = NULL;
             delete temp;
             temp = NULL;
         } else if(temp->left && temp->right) {
             TaskItem* min = temp->right;
             while (min->left) {
-                min = min->left;
+                if (!min->left->left) {
+                    TaskItem* parent = min;
+                    min = min->left;
+                    parent->left = NULL;
+                } else
+                    min = min->left;
             }
             cur->left = min;
             min->left = temp->left;
+            if(cur->right != min) {
+                min->right = temp->right;
+            }
             delete temp;
             temp = NULL;
         } else if (temp->left || temp->right) {
@@ -193,18 +221,27 @@ void BinarySearchTree::remove(BinarySearchTree::TaskItem val, BinarySearchTree::
          temp = NULL;
         }
     }
-    else if (val.priority == cur->right->priority) {
+    else if (cur->right && val.priority == cur->right->priority) {
         TaskItem* temp = cur->right;
         if (!temp->left && ! temp->right) {
+            cur->right = NULL;
             delete temp;
             temp = NULL;
         } else if(temp->left && temp->right) {
             TaskItem* min = temp->right;
             while (min->left) {
-                min = min->left;
+                if (!min->left->left) {
+                    TaskItem* parent = min;
+                    min = min->left;
+                    parent->left = NULL;
+                } else
+                    min = min->left;
             }
             cur->right = min;
             min->left = temp->left;
+            if(cur->right != min) {
+                min->right = temp->right;
+            }
             delete temp;
             temp = NULL;
         } else if (temp->left || temp->right) {
